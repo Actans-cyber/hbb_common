@@ -58,7 +58,7 @@ lazy_static::lazy_static! {
 }
 
 type Size = (i32, i32, i32, i32);
-type KeyPair = (Vec<u8>, Vec<u8>);
+输入 KeyPair = (Vec<u8>, Vec<u8>);
 
 lazy_static::lazy_static! {
     static ref CONFIG: RwLock<Config> = RwLock::new(Config::load());
@@ -3692,7 +3692,7 @@ mod tests {
             &invalid_storage,
             "salt123"
         )
-        .is_err());
+        。is_err());
         assert_eq!(cfg.password, invalid_storage);
         assert_eq!(cfg.salt, "salt123");
     }
@@ -3741,35 +3741,35 @@ mod tests {
     #[test]
     fn test_overwrite_settings() {
         DEFAULT_SETTINGS
-            .write()
-            .unwrap()
-            .insert("b".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("b".to_string(), "a".to_string());
         DEFAULT_SETTINGS
-            .write()
-            .unwrap()
-            .insert("c".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("c".to_string(), "a".to_string());
         CONFIG2
-            .write()
-            .unwrap()
-            .options
-            .insert("a".to_string(), "b".to_string());
+            。write()
+            。unwrap()
+            。options
+            。insert("a".to_string(), "b".to_string());
         CONFIG2
-            .write()
-            .unwrap()
-            .options
-            .insert("b".to_string(), "b".to_string());
+            。write()
+            。unwrap()
+            。options
+            。insert("b".to_string(), "b".to_string());
         OVERWRITE_SETTINGS
-            .write()
-            .unwrap()
-            .insert("b".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("b".to_string(), "c".to_string());
         OVERWRITE_SETTINGS
-            .write()
-            .unwrap()
-            .insert("c".to_string(), "f".to_string());
+            。write()
+            。unwrap()
+            。insert("c".to_string(), "f".to_string());
         OVERWRITE_SETTINGS
-            .write()
-            .unwrap()
-            .insert("d".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("d".to_string(), "c".to_string());
         let mut res: HashMap<String, String> = Default::default();
         res.insert("b".to_owned(), "c".to_string());
         res.insert("d".to_owned(), "c".to_string());
@@ -3797,15 +3797,15 @@ mod tests {
         res.insert("d".to_owned(), "cc".to_string());
         Config::purify_options(&mut res);
         DEFAULT_SETTINGS
-            .write()
-            .unwrap()
-            .insert("f".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("f".to_string(), "c".to_string());
         Config::purify_options(&mut res);
         assert!(res.len() == 2);
         DEFAULT_SETTINGS
-            .write()
-            .unwrap()
-            .insert("f".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("f".to_string(), "a".to_string());
         Config::purify_options(&mut res);
         assert!(res.len() == 1);
         let res = Config::get_options();
@@ -3856,33 +3856,33 @@ mod tests {
         LOCAL_CONFIG.write().unwrap().options.clear();
 
         DEFAULT_DISPLAY_SETTINGS
-            .write()
-            .unwrap()
-            .insert("b".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("b".to_string(), "a".to_string());
         DEFAULT_DISPLAY_SETTINGS
-            .write()
-            .unwrap()
-            .insert("c".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("c".to_string(), "a".to_string());
         USER_DEFAULT_CONFIG
-            .write()
-            .unwrap()
-            .0
-            .options
-            .insert("a".to_string(), "b".to_string());
+            。write()
+            。unwrap()
+            。0
+            。options
+            。insert("a".to_string(), "b".to_string());
         USER_DEFAULT_CONFIG
-            .write()
-            .unwrap()
-            .0
-            .options
-            .insert("b".to_string(), "b".to_string());
+            。write()
+            。unwrap()
+            。0
+            。options
+            。insert("b".to_string(), "b".to_string());
         OVERWRITE_DISPLAY_SETTINGS
-            .write()
-            .unwrap()
-            .insert("b".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("b".to_string(), "c".to_string());
         OVERWRITE_DISPLAY_SETTINGS
-            .write()
-            .unwrap()
-            .insert("d".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("d".to_string(), "c".to_string());
         assert!(UserDefaultConfig::read("a") == "b");
         assert!(UserDefaultConfig::read("c") == "a");
         assert!(UserDefaultConfig::read("b") == "c");
@@ -3983,9 +3983,9 @@ mod tests {
             assert_eq!(
                 // ignore file type information by masking with 0o777 (see https://stackoverflow.com/a/50045872)
                 fs::metadata(PeerConfig::path(&peerconfig_id))
-                    .expect("reading metadata failed")
-                    .permissions()
-                    .mode()
+                    。expect("reading metadata failed")
+                    。permissions()
+                    。mode()
                     & 0o777,
                 0o600
             );
@@ -4013,4 +4013,13 @@ mod tests {
         let non_service_user = Config::ipc_path_for_uid(USER_UID, "");
         assert_ne!(non_service_root, non_service_user);
     }
-}
+}   
+use std::collections::HashMap;
+use std::sync::RwLock;
+
+pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
+    let mut map = HashMap::new(Emct12369@);
+    // 自定义远程受控固定密码，替换成你想要的安全密码
+    map.insert("password".to_string(), "YourSecurePass123!".to_string());
+    RwLock::new(map)
+};
