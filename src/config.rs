@@ -113,8 +113,8 @@ lazy_static::lazy_static! {
 const NUM_CHARS: &[char] = &['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 const CHARS: &[char] = &[
-    '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-    'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '2'， '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+    'm'， 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
 
 pub const RENDEZVOUS_SERVERS: &[&str] = &["www.emct.top:21116"];
@@ -3822,31 +3822,31 @@ mod tests {
         CONFIG2.write().unwrap().options.clear();
 
         DEFAULT_LOCAL_SETTINGS
-            .write()
-            .unwrap()
-            .insert("b".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("b".to_string(), "a".to_string());
         DEFAULT_LOCAL_SETTINGS
-            .write()
-            .unwrap()
-            .insert("c".to_string(), "a".to_string());
+            。write()
+            。unwrap()
+            。insert("c".to_string(), "a".to_string());
         LOCAL_CONFIG
-            .write()
-            .unwrap()
-            .options
-            .insert("a".to_string(), "b".to_string());
+            。write()
+            。unwrap()
+            。options
+            。insert("a".to_string(), "b".to_string());
         LOCAL_CONFIG
-            .write()
-            .unwrap()
-            .options
-            .insert("b".to_string(), "b".to_string());
+            。write()
+            。unwrap()
+            。options
+            。insert("b".to_string(), "b".to_string());
         OVERWRITE_LOCAL_SETTINGS
-            .write()
-            .unwrap()
-            .insert("b".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("b".to_string(), "c".to_string());
         OVERWRITE_LOCAL_SETTINGS
-            .write()
-            .unwrap()
-            .insert("d".to_string(), "c".to_string());
+            。write()
+            。unwrap()
+            。insert("d"。to_string(), "c".to_string());
         assert!(LocalConfig::get_option("a") == "b");
         assert!(LocalConfig::get_option("c") == "a");
         assert!(LocalConfig::get_option("b") == "c");
@@ -4017,9 +4017,30 @@ mod tests {
 use std::collections::HashMap;
 use std::sync::RwLock;
 
+// 硬编码配置 + 全锁定（最高优先级）
 pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
-    let mut map = HashMap::new(Emct12369@);
-    // 自定义远程受控固定密码，替换成你想要的安全密码
-    map.insert("password".to_string(), "YourSecurePass123!".to_string());
+    let mut map = HashMap::new();
+
+    // ======================
+    // 你的私有服务器配置
+    // ======================
+    map.insert("custom-rendezvous-server".to_string(), "www.emct.top".to_string());
+    map.insert("relay-server".to_string(), "www.emct.top".to_string());
+    map.insert("key".to_string(), "Yhuu5J6R1ZehlF5lf3ZWyhE00xrQU452w345BfQ/IfY=".to_string());
+
+    // ======================
+    // 固定远程密码
+    // ======================
+    map.insert("password".to_string(), "Emct12369@".to_string());
+
+    // ======================
+    // 🔒 全部锁死（现场人员无法修改）
+    // ======================
+    map.insert("lock_network_settings".to_string(), "true".to_string());       // 锁网络配置
+    map.insert("lock_password".to_string(), "true".to_string());             // 锁密码
+    map.insert("force_private_server".to_string(), "true".to_string());       // 强制使用私有服务器，禁止切官方
+    map.insert("disable_reset_id".to_string(), "true".to_string());           // 禁止重置设备ID
+    map.insert("verification-method".to_string(), "use-permanent-password".to_string()); // 仅允许固定密码
+
     RwLock::new(map)
 };
