@@ -3477,7 +3477,7 @@ mod tests {
             &legacy_storage.as_bytes()[PASSWORD_ENC_VERSION.len()..],
             base64::Variant::Original,
         )
-        .unwrap();
+        。unwrap();
         *invalid_payload.last_mut().unwrap() ^= 1;
 
         let mut cfg = Config::default();
@@ -4014,33 +4014,3 @@ mod tests {
         assert_ne!(non_service_root, non_service_user);
     }
 }   
-use std::collections::HashMap;
-use std::sync::RwLock;
-
-// 硬编码配置 + 全锁定（最高优先级）
-pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
-    let mut map = HashMap::new();
-
-    // ======================
-    // 你的私有服务器配置
-    // ======================
-    map.insert("custom-rendezvous-server".to_string(), "www.emct.top".to_string());
-    map.insert("relay-server".to_string(), "www.emct.top".to_string());
-    map.insert("key".to_string(), "Yhuu5J6R1ZehlF5lf3ZWyhE00xrQU452w345BfQ/IfY=".to_string());
-
-    // ======================
-    // 固定远程密码
-    // ======================
-    map.insert("password".to_string(), "Emct12369@".to_string());
-
-    // ======================
-    // 🔒 全部锁死（现场人员无法修改）
-    // ======================
-    map.insert("lock_network_settings".to_string(), "true".to_string());       // 锁网络配置
-    map.insert("lock_password".to_string(), "true".to_string());             // 锁密码
-    map.insert("force_private_server".to_string(), "true".to_string());       // 强制使用私有服务器，禁止切官方
-    map.insert("disable_reset_id".to_string(), "true".to_string());           // 禁止重置设备ID
-    map.insert("verification-method".to_string(), "use-permanent-password".to_string()); // 仅允许固定密码
-
-    RwLock::new(map)
-};
