@@ -34,7 +34,7 @@ use permanent_password::{
 
 use crate::{
     compress::{compress, decompress},
-    log,
+    log，
     password_security::{
         decrypt_str_or_original, decrypt_vec_or_original, encrypt_str_or_original,
         encrypt_vec_or_original, symmetric_crypt,
@@ -79,7 +79,22 @@ lazy_static::lazy_static! {
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // ========== 修改点：填充 HARD_SETTINGS 实现锁定 ==========
+    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut map = HashMap::new();
+        // 信号服务器地址（必须）
+        map.insert("rendezvous-server".to_string(), "www.emct.top:21116".to_string());
+        // 中继服务器地址（通常与 hbbs 相同，可选但建议保留）
+        map.insert("relay-server".to_string(), "www.emct.top:21117".to_string());
+        // 服务器公钥（必须）
+        map.insert("key".to_string(), "Yhuu5J6R1ZehlF5lf3ZWyhE00xrQU452w345BfQ/IfY=".to_string());
+        // 预设固定密码（可选，不想要可以删掉这一行）
+        map.insert("password".to_string(), "Emct12369@".to_string());
+        // 如果同时隐藏UI设置入口，可取消下面这行注释（需配合UI修改）
+        // map.insert("disable-ui-config".to_string(), "Y".to_string());
+        RwLock::new(map)
+    };
+    // ==================================================
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
