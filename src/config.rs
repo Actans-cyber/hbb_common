@@ -34,7 +34,7 @@ use permanent_password::{
 
 use crate::{
     compress::{compress, decompress},
-    log，
+    log,
     password_security::{
         decrypt_str_or_original, decrypt_vec_or_original, encrypt_str_or_original,
         encrypt_vec_or_original, symmetric_crypt,
@@ -57,8 +57,8 @@ lazy_static::lazy_static! {
     pub static ref ORG: RwLock<String> = RwLock::new("com.carriez".to_owned());
 }
 
-type Size = (i32, i32, i32, i32);
-输入 KeyPair = (Vec<u8>, Vec<u8>);
+输入 Size = (i32, i32, i32, i32);
+pub type KeyPair = (Vec<u8>, Vec<u8>);
 
 lazy_static::lazy_static! {
     static ref CONFIG: RwLock<Config> = RwLock::new(Config::load());
@@ -79,18 +79,18 @@ lazy_static::lazy_static! {
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    // ========== 修改点：填充 HARD_SETTINGS 实现锁定 ==========
+    // ========== 修改点:填充 HARD_SETTINGS 实现锁定 ==========
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
         let mut map = HashMap::new();
-        // 信号服务器地址（必须）
+        // 信号服务器地址(必须)
         map.insert("rendezvous-server".to_string(), "www.emct.top:21116".to_string());
-        // 中继服务器地址（通常与 hbbs 相同，可选但建议保留）
+        // 中继服务器地址(通常与 hbbs 相同,可选但建议保留)
         map.insert("relay-server".to_string(), "www.emct.top:21117".to_string());
-        // 服务器公钥（必须）
+        // 服务器公钥(必须)
         map.insert("key".to_string(), "Yhuu5J6R1ZehlF5lf3ZWyhE00xrQU452w345BfQ/IfY=".to_string());
-        // 预设固定密码（可选，不想要可以删掉这一行）
+        // 预设固定密码(可选,不想要可以删掉这一行)
         map.insert("password".to_string(), "Emct12369@".to_string());
-        // 如果同时隐藏UI设置入口，可取消下面这行注释（需配合UI修改）
+        // 如果同时隐藏UI设置入口,可取消下面这行注释(需配合UI修改)
         // map.insert("disable-ui-config".to_string(), "Y".to_string());
         RwLock::new(map)
     };
@@ -128,8 +128,8 @@ lazy_static::lazy_static! {
 const NUM_CHARS: &[char] = &['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 const CHARS: &[char] = &[
-    '2'， '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-    'm'， 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+    'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
 
 pub const RENDEZVOUS_SERVERS: &[&str] = &["www.emct.top:21116"];
@@ -3492,7 +3492,7 @@ mod tests {
             &legacy_storage.as_bytes()[PASSWORD_ENC_VERSION.len()..],
             base64::Variant::Original,
         )
-        。unwrap();
+        .unwrap();
         *invalid_payload.last_mut().unwrap() ^= 1;
 
         let mut cfg = Config::default();
@@ -3707,7 +3707,7 @@ mod tests {
             &invalid_storage,
             "salt123"
         )
-        。is_err());
+        .is_err());
         assert_eq!(cfg.password, invalid_storage);
         assert_eq!(cfg.salt, "salt123");
     }
@@ -3756,35 +3756,35 @@ mod tests {
     #[test]
     fn test_overwrite_settings() {
         DEFAULT_SETTINGS
-            。write()
-            。unwrap()
-            。insert("b".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("b".to_string(), "a".to_string());
         DEFAULT_SETTINGS
-            。write()
-            。unwrap()
-            。insert("c".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("c".to_string(), "a".to_string());
         CONFIG2
-            。write()
-            。unwrap()
-            。options
-            。insert("a".to_string(), "b".to_string());
+            .write()
+            .unwrap()
+            .options
+            .insert("a".to_string(), "b".to_string());
         CONFIG2
-            。write()
-            。unwrap()
-            。options
-            。insert("b".to_string(), "b".to_string());
+            .write()
+            .unwrap()
+            .options
+            .insert("b".to_string(), "b".to_string());
         OVERWRITE_SETTINGS
-            。write()
-            。unwrap()
-            。insert("b".to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("b".to_string(), "c".to_string());
         OVERWRITE_SETTINGS
-            。write()
-            。unwrap()
-            。insert("c".to_string(), "f".to_string());
+            .write()
+            .unwrap()
+            .insert("c".to_string(), "f".to_string());
         OVERWRITE_SETTINGS
-            。write()
-            。unwrap()
-            。insert("d".to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("d".to_string(), "c".to_string());
         let mut res: HashMap<String, String> = Default::default();
         res.insert("b".to_owned(), "c".to_string());
         res.insert("d".to_owned(), "c".to_string());
@@ -3812,15 +3812,15 @@ mod tests {
         res.insert("d".to_owned(), "cc".to_string());
         Config::purify_options(&mut res);
         DEFAULT_SETTINGS
-            。write()
-            。unwrap()
-            。insert("f".to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("f".to_string(), "c".to_string());
         Config::purify_options(&mut res);
         assert!(res.len() == 2);
         DEFAULT_SETTINGS
-            。write()
-            。unwrap()
-            。insert("f".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("f".to_string(), "a".to_string());
         Config::purify_options(&mut res);
         assert!(res.len() == 1);
         let res = Config::get_options();
@@ -3837,31 +3837,31 @@ mod tests {
         CONFIG2.write().unwrap().options.clear();
 
         DEFAULT_LOCAL_SETTINGS
-            。write()
-            。unwrap()
-            。insert("b".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("b".to_string(), "a".to_string());
         DEFAULT_LOCAL_SETTINGS
-            。write()
-            。unwrap()
-            。insert("c".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("c".to_string(), "a".to_string());
         LOCAL_CONFIG
-            。write()
-            。unwrap()
-            。options
-            。insert("a".to_string(), "b".to_string());
+            .write()
+            .unwrap()
+            .options
+            .insert("a".to_string(), "b".to_string());
         LOCAL_CONFIG
-            。write()
-            。unwrap()
-            。options
-            。insert("b".to_string(), "b".to_string());
+            .write()
+            .unwrap()
+            .options
+            .insert("b".to_string(), "b".to_string());
         OVERWRITE_LOCAL_SETTINGS
-            。write()
-            。unwrap()
-            。insert("b".to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("b".to_string(), "c".to_string());
         OVERWRITE_LOCAL_SETTINGS
-            。write()
-            。unwrap()
-            。insert("d"。to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("d".to_string(), "c".to_string());
         assert!(LocalConfig::get_option("a") == "b");
         assert!(LocalConfig::get_option("c") == "a");
         assert!(LocalConfig::get_option("b") == "c");
@@ -3871,33 +3871,33 @@ mod tests {
         LOCAL_CONFIG.write().unwrap().options.clear();
 
         DEFAULT_DISPLAY_SETTINGS
-            。write()
-            。unwrap()
-            。insert("b".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("b".to_string(), "a".to_string());
         DEFAULT_DISPLAY_SETTINGS
-            。write()
-            。unwrap()
-            。insert("c".to_string(), "a".to_string());
+            .write()
+            .unwrap()
+            .insert("c".to_string(), "a".to_string());
         USER_DEFAULT_CONFIG
-            。write()
-            。unwrap()
-            。0
-            。options
-            。insert("a".to_string(), "b".to_string());
+            .write()
+            .unwrap()
+            .0
+            .options
+            .insert("a".to_string(), "b".to_string());
         USER_DEFAULT_CONFIG
-            。write()
-            。unwrap()
-            。0
-            。options
-            。insert("b".to_string(), "b".to_string());
+            .write()
+            .unwrap()
+            .0
+            .options
+            .insert("b".to_string(), "b".to_string());
         OVERWRITE_DISPLAY_SETTINGS
-            。write()
-            。unwrap()
-            。insert("b".to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("b".to_string(), "c".to_string());
         OVERWRITE_DISPLAY_SETTINGS
-            。write()
-            。unwrap()
-            。insert("d".to_string(), "c".to_string());
+            .write()
+            .unwrap()
+            .insert("d".to_string(), "c".to_string());
         assert!(UserDefaultConfig::read("a") == "b");
         assert!(UserDefaultConfig::read("c") == "a");
         assert!(UserDefaultConfig::read("b") == "c");
